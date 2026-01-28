@@ -2,7 +2,7 @@
 import { User } from '../types';
 
 // Updated URL
-const API_URL = 'https://script.google.com/macros/s/AKfycbx8c_77DdsuIGpVfjHBEF8Vv3TGKplFHzvxrDZqLWbn9EDwNeo5eZp8VxJRd_QoGYTQ/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbzHGiEUwNZf0RRlzG5yPSSxKMffiAUsOwIuuZuBZtBn2Tno0xJOl4jvBZOBX3e6RP0/exec';
 
 async function callApi(action: string, payload: any = {}) {
   const response = await fetch(API_URL, {
