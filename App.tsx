@@ -87,7 +87,7 @@ const styles = `
   .feature-icon { width: 48px; height: 48px; background: var(--primary-light); color: var(--primary); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 1.5rem; }
   .feature-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-main); }
   .feature-desc { font-size: 0.95rem; color: var(--text-muted); line-height: 1.5; }
-  .landing-footer { margin-top: auto; padding-top: 40px; border-top: 1px solid var(--border); width: 100%; display: flex; justify-content: center; }
+  .landing-footer { margin-top: auto; padding-top: 40px; border-top: 1px solid var(--border); width: 100%; display: flex; flex-direction: column; align-items: center; gap: 20px; justify-content: center; }
   .admin-link { color: var(--text-light); font-size: 0.9rem; text-decoration: none; font-weight: 500; transition: color 0.2s; background: none; border: none; cursor: pointer; }
   .admin-link:hover { color: var(--primary); }
 
@@ -230,6 +230,7 @@ const styles = `
   thead { background: #f1f5f9; }
 
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 `;
 
 const App: React.FC = () => {
@@ -320,6 +321,23 @@ const LandingView = ({ setView }: { setView: (v: any) => void }) => (
       <button className="admin-link" onClick={() => setView('admin-login')}>
         Administrator Portal
       </button>
+      <a href="https://wa.me/917708414584" target="_blank" rel="noopener noreferrer" 
+         style={{ 
+             display: 'flex', 
+             alignItems: 'center', 
+             gap: '8px', 
+             color: '#25D366', 
+             textDecoration: 'none', 
+             fontWeight: 600, 
+             fontSize: '0.95rem',
+             marginTop: '10px',
+             padding: '8px 16px',
+             background: 'rgba(37, 211, 102, 0.1)',
+             borderRadius: '50px',
+             transition: 'all 0.2s'
+         }}>
+         <span style={{ fontSize: '1.2rem' }}>💬</span> Contact on WhatsApp: +91 77084 14584
+      </a>
     </div>
   </div>
 );
@@ -431,6 +449,7 @@ const UserRegistration = ({ setView }: { setView: any }) => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('https://lh3.googleusercontent.com/d/11aXROhyMJ2v--yIJ1xDh-ehA7oAqmKNS');
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
 
   useEffect(() => {
     if (step === 2) {
@@ -469,14 +488,33 @@ const UserRegistration = ({ setView }: { setView: any }) => {
     try {
       const payload: any = { ...form, screenshotData: screenshotData.base64, screenshotMime: screenshotData.mime };
       await api.register(payload);
-      alert("Registration Successful! Screenshot uploaded to Drive. Please wait for admin approval.");
-      setView('landing');
+      setRegistrationSuccess(true);
     } catch (e: any) {
       alert("Registration Failed: " + e.message);
     } finally {
       setLoading(false);
     }
   };
+
+  if (registrationSuccess) {
+    return (
+        <div className="card" style={{ textAlign: 'center', padding: '60px 40px', maxWidth: '600px', margin: '40px auto', animation: 'scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '24px', animation: 'fadeIn 1s' }}>🎉</div>
+            <h2 style={{ color: 'var(--success)', marginBottom: '16px', fontSize: '2rem' }}>Registration Successful!</h2>
+            <div style={{ width: '60px', height: '4px', background: 'var(--success)', margin: '0 auto 24px', borderRadius: '2px' }}></div>
+            <p style={{ fontSize: '1.1rem', color: 'var(--text-main)', marginBottom: '12px', fontWeight: 500 }}>
+                Thank you for signing up, {form.name}.
+            </p>
+            <p style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '40px', lineHeight: '1.6' }}>
+                Your account is currently pending administrator approval.<br/>
+                Once your payment is verified, you will receive an <strong>email confirmation</strong> activating your account.
+            </p>
+            <button className="btn btn-primary" onClick={() => setView('landing')} style={{ maxWidth: '200px' }}>
+                Return to Home
+            </button>
+        </div>
+    );
+  }
 
   return (
     <div className="card">
